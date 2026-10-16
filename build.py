@@ -35,13 +35,17 @@ art = inject({'name': 'Sujatha', 'embed': False, 'thumbs': False, 'sw': False}, 
 
 # service worker: cache shell + photos on first visit
 imgs = sorted(os.listdir(ROOT / 'img'))
-(ROOT / 'sw.js').write_text("""const C='dd-v1';
+import hashlib
+ver = hashlib.md5((ROOT / 'index.html').read_bytes()).hexdigest()[:8]
+(ROOT / 'sw.js').write_text("""const C='dd-%s';
 const SHELL=['./','index.html','manifest.json','icon.png'].concat(%s.map(f=>'img/'+f));
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.origin!==location.origin)return;
+const page=/\\/(index\\.html)?$/.test(u.pathname);
+if(page){e.respondWith(fetch(e.request).then(res=>{const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp));return res;}).catch(()=>caches.match(e.request)));return;}
 e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp));return res;})))});
-""" % json.dumps(imgs))
+""" % (ver, json.dumps(imgs)))
 (ROOT / 'manifest.json').write_text(json.dumps({
     'name': 'Divya Desam Yatra', 'short_name': 'Divya Desam', 'start_url': './index.html', 'display': 'standalone',
     'background_color': '#f6ecd8', 'theme_color': '#b7322a', 'icons': [{'src': 'icon.png', 'sizes': '512x512', 'type': 'image/png'}]}, indent=1))
