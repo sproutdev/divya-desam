@@ -99,9 +99,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
 .alllink { margin-top: 26px; text-align: center; }
 
 /* bottom bar: the only controls */
-.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 2px solid var(--line); padding-left: max(10px, env(safe-area-inset-left, 0px)); padding-right: max(10px, env(safe-area-inset-right, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); display: grid; grid-template-columns: 1fr 88px 1fr; gap: 8px; height: calc(var(--bar) + env(safe-area-inset-bottom, 0px)); z-index: 5; }
-.bar button { border: 0; background: transparent; min-height: 72px; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--display); font-weight: 700; font-size: 20px; cursor: pointer; border-radius: 14px; margin-block: 6px; padding: 0 8px; min-width: 0; }
-.bar button svg { width: 30px; height: 30px; flex: 0 0 auto; }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 2px solid var(--line); padding-left: max(10px, env(safe-area-inset-left, 0px)); padding-right: max(10px, env(safe-area-inset-right, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); display: grid; grid-template-columns: 1fr 72px 1fr; gap: 6px; height: calc(var(--bar) + env(safe-area-inset-bottom, 0px)); z-index: 5; }
+.bar button { border: 0; background: transparent; min-height: 72px; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: var(--display); font-weight: 700; font-size: 19px; cursor: pointer; border-radius: 14px; margin-block: 6px; padding: 0 8px; min-width: 0; }
+.bar button svg { width: 28px; height: 28px; flex: 0 0 auto; }
 .bar button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar button[disabled] { opacity: .35; cursor: default; }
 .bar .sound { background: var(--bg-2); }
@@ -278,7 +278,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
     el.setAttribute('aria-label', v ? 'Watch a video of ' + t.name : t.name);
     if (v && CFG.embed) el.onclick = () => play(v);
     w.appendChild(el);
-    $('vmeta').textContent = v ? v.title + ' · ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '') : '';
+    $('vmeta').textContent = v ? 'Video by ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '') : '';
     const vl = $('vlist'); vl.innerHTML = '';
     const rest = (t.videos || []).slice(1); $('moreWrap').hidden = !rest.length; $('moreWrap').open = false;
     rest.forEach(x => {
@@ -297,7 +297,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
     const f = document.createElement('iframe'); f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true;
     f.src = 'https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&rel=0&playsinline=1'; f.title = v.title;
     box.appendChild(f); w.appendChild(box);
-    $('vmeta').textContent = v.title + ' · ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '');
+    $('vmeta').textContent = 'Now playing · ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '');
     w.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
