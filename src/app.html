@@ -1,0 +1,397 @@
+<title>Divya Desam Yatra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@500;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: one column, phone first. A greeting, today's temple as a large card, then a two-column grid of photo cards. */
+:root {
+  --bg: #f6ecd8;        /* sandal paste */
+  --bg-2: #efe1c6;      /* deeper sandal, chips and wells */
+  --card: #fffaf0;
+  --fg: #1c2340;        /* neela megha: blue-black of Perumal */
+  --fg-2: #5a5f78;
+  --line: #d9c7a3;
+  --accent: #b7322a;    /* srichurnam red */
+  --accent-fg: #ffffff;
+  --gold: #d99a1e;      /* marigold garland */
+  --gold-fg: #2a1c05;
+  --tulasi: #2f7a4b;    /* visited */
+  --shadow: 0 6px 18px rgba(60, 40, 10, .14);
+  --display: "Baloo Thambi 2", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Helvetica Neue", Arial, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141a2e; --bg-2: #1d2440; --card: #212a4a; --fg: #f3ead7; --fg-2: #b8b4c8; --line: #35406a;
+  --accent: #e8584c; --accent-fg: #ffffff; --gold: #f0b03a; --gold-fg: #2a1c05; --tulasi: #5ec584;
+  --shadow: 0 6px 18px rgba(0,0,0,.4); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #141a2e; --bg-2: #1d2440; --card: #212a4a; --fg: #f3ead7; --fg-2: #b8b4c8; --line: #35406a;
+  --accent: #e8584c; --accent-fg: #ffffff; --gold: #f0b03a; --gold-fg: #2a1c05; --tulasi: #5ec584;
+  --shadow: 0 6px 18px rgba(0,0,0,.4); color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 19px/1.5 var(--body); -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; margin: 0; text-wrap: balance; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 40px; max-width: 760px; margin: 0 auto; }
+.view[hidden] { display: none !important; }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 6px 10px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 22px; font-weight: 700; }
+.brand svg { width: 34px; height: 34px; }
+.eyebrow { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-2); font-weight: 700; }
+
+/* greeting */
+.greet { padding-block: 6px 14px; }
+.greet h1 { font-size: 34px; }
+.greet p { margin: 4px 0 0; color: var(--fg-2); }
+
+/* hero: today's temple */
+.hero { position: relative; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); background: var(--card); cursor: pointer; border: 0; padding: 0; width: 100%; text-align: left; display: block; }
+.hero img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.hero .cap { position: absolute; inset: auto 0 0 0; padding: 60px 18px 18px; background: linear-gradient(to top, rgba(14,16,36,.92), rgba(14,16,36,.55) 55%, transparent); color: #fff8ea; }
+.hero .cap .eyebrow { color: #f0c66a; }
+.hero .cap h2 { font-size: 28px; color: #fff8ea; }
+.hero .cap p { margin: 2px 0 0; font-size: 17px; opacity: .9; }
+.hero .go { position: absolute; top: 14px; right: 14px; background: var(--gold); color: var(--gold-fg); font-family: var(--display); font-weight: 700; padding: 8px 14px; border-radius: 999px; font-size: 16px; }
+
+/* progress garland */
+.progress { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 14px 16px; background: var(--card); border-radius: 16px; border: 1px solid var(--line); }
+.progress .num { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; min-width: 2ch; text-align: center; }
+.progress .num small { display: block; font-size: 13px; color: var(--fg-2); font-family: var(--body); font-weight: 400; }
+.bar { flex: 1; height: 12px; background: var(--bg-2); border-radius: 999px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--gold), var(--accent)); border-radius: 999px; transition: width .4s; }
+
+/* region chips */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-block: 18px 6px; scrollbar-width: none; margin-inline: -4px; padding-inline: 4px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: 0 0 auto; border: 2px solid var(--line); background: var(--card); border-radius: 999px; padding: 10px 16px; font-size: 17px; font-weight: 700; min-height: 48px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.chip small { font-weight: 400; color: inherit; opacity: .7; margin-left: 4px; }
+
+.region-note { color: var(--fg-2); font-size: 16px; margin: 8px 0 12px; }
+
+/* grid */
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (min-width: 620px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.card { position: relative; border: 0; padding: 0; background: var(--card); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); text-align: left; cursor: pointer; display: flex; flex-direction: column; min-width: 0; }
+.card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.card .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px; }
+.card .name { font-family: var(--display); font-weight: 700; font-size: 18px; line-height: 1.2; }
+.card .town { color: var(--fg-2); font-size: 15px; }
+.badge { position: absolute; top: 10px; left: 10px; background: var(--gold); color: var(--gold-fg); font-family: var(--display); font-weight: 700; font-size: 15px; padding: 4px 10px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.visited-mark { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; background: var(--tulasi); display: none; place-items: center; }
+.card.visited .visited-mark { display: grid; }
+.visited-mark svg { width: 20px; height: 20px; }
+
+/* detail */
+.back { display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 10px 6px 10px 0; font-size: 18px; font-weight: 700; cursor: pointer; min-height: 48px; }
+.back svg { width: 26px; height: 26px; }
+.photo { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); background: var(--bg-2); }
+.photo img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.title { padding-block: 16px 6px; }
+.title h1 { font-size: 32px; }
+.title .alt { color: var(--fg-2); font-size: 17px; margin-top: 2px; }
+.facts { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+@media (min-width: 520px) { .facts { grid-template-columns: 1fr 1fr; } }
+.fact { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.fact .eyebrow { font-size: 12px; }
+.fact div { font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
+
+.actions { display: grid; gap: 12px; margin-top: 18px; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 60px; border-radius: 16px; border: 2px solid var(--line); background: var(--card); font-family: var(--display); font-weight: 700; font-size: 20px; padding: 12px 18px; cursor: pointer; text-decoration: none; color: var(--fg); }
+.btn svg { width: 26px; height: 26px; flex: 0 0 auto; }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn.visited-on { background: var(--tulasi); border-color: var(--tulasi); color: #fff; }
+.btn span.sub { font-family: var(--body); font-weight: 400; font-size: 15px; opacity: .85; }
+
+.player { margin-top: 18px; border-radius: 18px; overflow: hidden; background: #000; box-shadow: var(--shadow); max-width: 100%; }
+.player .frame { position: relative; aspect-ratio: 16/9; max-width: 100%; display: grid; place-items: center; cursor: pointer; background: linear-gradient(135deg, #1c2340, #3a2a5a); color: #fff8ea; text-align: center; padding: 20px; }
+.player .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+.player .frame .play { position: relative; width: 84px; height: 84px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+.player .frame .play svg { width: 40px; height: 40px; margin-left: 5px; }
+.player .frame .vt { position: relative; font-weight: 700; font-size: 16px; margin-top: 10px; text-shadow: 0 1px 6px rgba(0,0,0,.6); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.player iframe { display: block; width: 100%; aspect-ratio: 16/9; border: 0; }
+.player .meta { background: var(--card); padding: 10px 14px; font-size: 15px; color: var(--fg-2); display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+.player .meta a { font-weight: 700; white-space: nowrap; }
+
+.more { margin-top: 14px; }
+.more summary { cursor: pointer; font-weight: 700; font-size: 17px; padding: 10px 0; list-style: none; display: flex; align-items: center; gap: 8px; }
+.more summary::before { content: ""; width: 10px; height: 10px; border-right: 3px solid var(--fg-2); border-bottom: 3px solid var(--fg-2); transform: rotate(-45deg); transition: transform .2s; }
+.more[open] summary::before { transform: rotate(45deg); }
+.vlist { display: grid; gap: 8px; }
+.vlist a, .vlist button { display: flex; gap: 12px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; text-decoration: none; color: var(--fg); text-align: left; cursor: pointer; min-height: 56px; width: 100%; }
+.vlist .t { font-weight: 700; font-size: 16px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.vlist .c { font-size: 14px; color: var(--fg-2); }
+.vlist svg { width: 24px; height: 24px; flex: 0 0 auto; color: var(--accent); }
+
+.story { margin-top: 22px; }
+.story h2 { font-size: 24px; margin-bottom: 8px; }
+.story p { margin: 0 0 12px; max-width: 65ch; }
+.story .clamp { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; }
+.story .clamp.open { display: block; }
+.linkrow { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+.linkrow button, .linkrow a { border: 0; background: transparent; font-weight: 700; font-size: 17px; color: var(--accent); padding: 8px 0; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; }
+.linkrow svg { width: 22px; height: 22px; }
+
+.nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
+.nav button { min-height: 64px; border-radius: 16px; border: 2px solid var(--line); background: var(--card); cursor: pointer; text-align: left; padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.nav button:last-child { text-align: right; align-items: flex-end; }
+.nav .eyebrow { font-size: 12px; }
+.nav .nm { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.nav button[disabled] { opacity: .35; cursor: default; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(20px); background: var(--fg); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-weight: 700; opacity: 0; transition: all .25s; pointer-events: none; white-space: nowrap; max-width: calc(100vw - 32px); }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.foot { margin-top: 36px; color: var(--fg-2); font-size: 14px; text-align: center; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 L12 22 H16 L12 44 H36 L32 22 H36 Z" fill="var(--gold)"/><path d="M20 44 V32 a4 4 0 0 1 8 0 V44 Z" fill="var(--accent)"/><rect x="18" y="24" width="12" height="3" fill="var(--accent)"/></svg>
+      <span>Divya Desam Yatra</span>
+    </div>
+    <div class="eyebrow" id="dateLabel"></div>
+  </div>
+
+  <section class="view" id="viewHome">
+    <div class="greet">
+      <h1 id="greeting">Vanakkam, Sujatha</h1>
+      <p>108 holy abodes of Perumal, sung by the Alvars. Tap any temple to visit.</p>
+    </div>
+
+    <button class="hero" id="hero" aria-label="Today's temple">
+      <img id="heroImg" alt="">
+      <span class="go">Visit today</span>
+      <div class="cap">
+        <div class="eyebrow">Today's temple</div>
+        <h2 id="heroName"></h2>
+        <p id="heroTown"></p>
+      </div>
+    </button>
+
+    <div class="progress" aria-live="polite">
+      <div class="num"><span id="visitedCount">0</span><small>visited</small></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="num">108<small>temples</small></div>
+    </div>
+
+    <div class="chips" id="chips" role="group" aria-label="Region"></div>
+    <p class="region-note" id="regionNote"></p>
+    <div class="grid" id="grid"></div>
+    <p class="foot">Photos from Wikimedia Commons contributors. Videos play from YouTube.</p>
+  </section>
+
+  <section class="view" id="viewTemple" hidden>
+    <button class="back" id="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg> All temples</button>
+    <div class="photo"><img id="tImg" alt=""></div>
+    <div class="title">
+      <div class="eyebrow" id="tNum"></div>
+      <h1 id="tName"></h1>
+      <div class="alt" id="tAlt"></div>
+    </div>
+    <div class="facts">
+      <div class="fact"><div class="eyebrow">Perumal and Thayar</div><div id="tDeities"></div></div>
+      <div class="fact"><div class="eyebrow">Where</div><div id="tPlace"></div></div>
+    </div>
+
+    <div class="player" id="player"></div>
+    <details class="more" id="moreWrap"><summary>More videos of this temple</summary><div class="vlist" id="vlist"></div></details>
+
+    <div class="actions">
+      <a class="btn" id="storyBtn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V6a2 2 0 0 1 2-2h4a3 3 0 0 1 3 3v13"/><path d="M21 18V6a2 2 0 0 0-2-2h-4a3 3 0 0 0-3 3v13"/><path d="M3 18a2 2 0 0 0 2 2h4a3 3 0 0 1 3 3"/><path d="M21 18a2 2 0 0 1-2 2h-4a3 3 0 0 0-3 3"/></svg><span>Hear the story in Tamil <span class="sub" id="storyMins"></span></span></a>
+      <button class="btn" id="visitBtn"></button>
+    </div>
+
+    <div class="story">
+      <h2>About this temple</h2>
+      <p class="clamp" id="tDesc"></p>
+      <div class="linkrow">
+        <button id="readMore">Read more</button>
+        <button id="listenBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg> Listen</button>
+        <a id="wikiLink" target="_blank" rel="noopener">Wikipedia</a>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button id="prevBtn"><span class="eyebrow">Previous</span><span class="nm"></span></button>
+      <button id="nextBtn"><span class="eyebrow">Next</span><span class="nm"></span></button>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/*__DATA__*/
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const REGIONS = [
+    ['Chola Nadu', 'Kaveri delta: Srirangam, Kumbakonam, Thanjavur, Thirunangur'],
+    ['Nadu Nadu', 'Cuddalore and Kallakurichi'],
+    ['Tondai Nadu', 'Kanchipuram, Chennai and around'],
+    ['Malai Nadu', 'Kerala and Kanyakumari'],
+    ['Pandya Nadu', 'Tirunelveli, Thoothukudi, Madurai, Srivilliputhur'],
+    ['Vada Nadu', 'North India and Nepal: Ayodhya, Badrinath, Dwarka, Tirupati'],
+    ['Vinnulagam', 'The two celestial abodes']
+  ];
+  const T = window.TEMPLES; const CFG = window.CONFIG || {};
+  const NAME = CFG.name || 'Sujatha';
+  let region = 'All', current = null, speaking = false;
+
+  const store = {
+    get() { try { return JSON.parse(localStorage.getItem('dd.visited') || '[]'); } catch (e) { return []; } },
+    set(v) { try { localStorage.setItem('dd.visited', JSON.stringify(v)); } catch (e) {} }
+  };
+  const isVisited = (k) => store.get().includes(k);
+
+  // greeting and date
+  const now = new Date(); const h = now.getHours();
+  $('greeting').textContent = (h < 12 ? 'Good morning, ' : h < 17 ? 'Good afternoon, ' : 'Good evening, ') + NAME;
+  $('dateLabel').textContent = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+
+  // today's temple: rotates daily through all 111 shrines
+  const start = new Date(now.getFullYear(), 0, 0);
+  const doy = Math.floor((now - start) / 86400000);
+  const today = T[(doy * 7) % T.length];
+  $('heroImg').src = today.img; $('heroImg').alt = today.name;
+  $('heroName').textContent = today.name; $('heroTown').textContent = today.town + ', ' + today.state;
+  $('hero').onclick = () => open(today.key);
+
+  function updateProgress() {
+    const v = store.get().filter(k => T.some(t => t.key === k));
+    const nums = new Set(T.filter(t => v.includes(t.key)).map(t => t.n));
+    $('visitedCount').textContent = nums.size;
+    $('bar').style.width = (nums.size / 108 * 100) + '%';
+  }
+
+  // chips
+  const chips = $('chips');
+  const allChip = mkChip('All', T.length ? 108 : 0); chips.appendChild(allChip);
+  REGIONS.forEach(([r]) => chips.appendChild(mkChip(r, new Set(T.filter(t => t.region === r).map(t => t.n)).size)));
+  function mkChip(label, count) {
+    const b = document.createElement('button'); b.className = 'chip'; b.type = 'button';
+    b.innerHTML = label + '<small>' + count + '</small>'; b.setAttribute('aria-pressed', label === region);
+    b.onclick = () => { region = label; [...chips.children].forEach(c => c.setAttribute('aria-pressed', c === b)); renderGrid(); };
+    return b;
+  }
+
+  const check = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+  function renderGrid() {
+    const list = region === 'All' ? T : T.filter(t => t.region === region);
+    const note = REGIONS.find(r => r[0] === region);
+    $('regionNote').textContent = note ? note[1] : 'All 108 Divya Desams, in the traditional order from Srirangam to Paramapadam.';
+    const g = $('grid'); g.innerHTML = '';
+    list.forEach(t => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'card' + (isVisited(t.key) ? ' visited' : '');
+      b.innerHTML = '<img loading="lazy" alt=""><span class="badge">' + t.n + '</span><span class="visited-mark">' + check + '</span><div class="body"><div class="name"></div><div class="town"></div></div>';
+      b.querySelector('img').src = t.img; b.querySelector('.name').textContent = t.name; b.querySelector('.town').textContent = t.town;
+      b.onclick = () => open(t.key);
+      g.appendChild(b);
+    });
+  }
+
+  function open(key, push) {
+    const t = T.find(x => x.key === key); if (!t) return;
+    stopSpeech(); current = t;
+    if (push !== false) { try { location.hash = 't' + key; } catch (e) {} }
+    $('viewHome').hidden = true; $('viewTemple').hidden = false; window.scrollTo(0, 0);
+    $('tImg').src = t.img; $('tImg').alt = t.name;
+    const sibs = T.filter(x => x.n === t.n);
+    $('tNum').textContent = 'Divya Desam ' + t.n + ' of 108' + (sibs.length > 1 ? ' · shrine ' + (sibs.indexOf(t) + 1) + ' of ' + sibs.length : '') + ' · ' + t.region;
+    $('tName').textContent = t.name; $('tAlt').textContent = t.alt || '';
+    $('tDeities').textContent = t.deities; $('tPlace').textContent = t.place;
+    const text = t.desc || t.notes || ('Divya Desam ' + t.n + ', ' + t.deities + ', at ' + t.place + '.');
+    $('tDesc').textContent = text + (t.desc && t.notes ? ' ' + t.notes : '');
+    $('tDesc').classList.remove('open'); $('readMore').textContent = 'Read more';
+    $('wikiLink').href = t.wiki || ('https://en.wikipedia.org/wiki/Special:Search?search=' + encodeURIComponent(t.name + ' temple'));
+    renderPlayer(t);
+    if (t.story) {
+      $('storyBtn').hidden = false; $('storyBtn').href = 'https://www.youtube.com/watch?v=' + t.story.id; $('storyMins').textContent = t.story.mins ? '· ' + t.story.mins + ' min' : '';
+      $('storyBtn').onclick = CFG.embed ? (e) => { e.preventDefault(); playVideo({ id: t.story.id, title: 'Story of ' + t.name + ' in Tamil', channel: 'Velukkudi Discourses', mins: t.story.mins }, true); } : null;
+    }
+    else $('storyBtn').hidden = true;
+    renderVisit();
+    const i = T.indexOf(t);
+    setNav($('prevBtn'), T[i - 1]); setNav($('nextBtn'), T[i + 1]);
+  }
+  function setNav(btn, t) { btn.disabled = !t; btn.querySelector('.nm').textContent = t ? t.n + ' · ' + t.name : ''; btn.onclick = t ? () => open(t.key) : null; }
+
+  const playIcon = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8z"/></svg>';
+  function playVideo(v, autoplay) {
+    const p = $('player'); p.innerHTML = '';
+    const url = 'https://www.youtube.com/watch?v=' + v.id;
+    const frame = document.createElement(CFG.embed ? 'div' : 'a'); frame.className = 'frame';
+    if (!CFG.embed) { frame.href = url; frame.target = '_blank'; frame.rel = 'noopener'; }
+    frame.innerHTML = (CFG.thumbs ? '<img alt="" src="https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg">' : '') + '<div><div class="play">' + playIcon + '</div><div class="vt"></div></div>';
+    frame.querySelector('.vt').textContent = v.title;
+    const embed = () => {
+      const f = document.createElement('iframe'); f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true;
+      f.src = 'https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&rel=0&playsinline=1'; f.title = v.title; frame.replaceWith(f);
+    };
+    if (CFG.embed) frame.onclick = embed;
+    p.appendChild(frame);
+    const meta = document.createElement('div'); meta.className = 'meta';
+    meta.innerHTML = '<span></span><a target="_blank" rel="noopener">Open in YouTube</a>';
+    meta.querySelector('span').textContent = v.channel + (v.mins ? ' · ' + v.mins + ' min' : ''); meta.querySelector('a').href = url;
+    p.appendChild(meta);
+    if (autoplay && CFG.embed) { embed(); p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  function renderPlayer(t) {
+    const p = $('player');
+    const v = t.videos[0]; if (!v) { p.hidden = true; return; } p.hidden = false;
+    playVideo(v, false);
+    const vl = $('vlist'); vl.innerHTML = '';
+    const rest = t.videos.slice(1); $('moreWrap').hidden = !rest.length; $('moreWrap').open = false;
+    rest.forEach(x => {
+      const a = document.createElement(CFG.embed ? 'button' : 'a');
+      if (CFG.embed) { a.type = 'button'; a.onclick = () => playVideo(x, true); }
+      else { a.href = 'https://www.youtube.com/watch?v=' + x.id; a.target = '_blank'; a.rel = 'noopener'; }
+      a.innerHTML = playIcon.replace('#fff', 'currentColor') + '<div><div class="t"></div><div class="c"></div></div>';
+      a.querySelector('.t').textContent = x.title; a.querySelector('.c').textContent = x.channel + (x.mins ? ' · ' + x.mins + ' min' : '');
+      vl.appendChild(a);
+    });
+  }
+
+  function renderVisit() {
+    const on = isVisited(current.key); const b = $('visitBtn');
+    b.className = 'btn' + (on ? ' visited-on' : '');
+    b.innerHTML = (on ? check : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-4 7-7.5 7-12a7 7 0 0 0-14 0c0 4.5 3 8 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>') + '<span>' + (on ? 'Visited' : 'Mark as visited') + '</span>';
+  }
+  $('visitBtn').onclick = () => {
+    let v = store.get(); const on = v.includes(current.key);
+    v = on ? v.filter(k => k !== current.key) : v.concat(current.key); store.set(v);
+    renderVisit(); updateProgress(); renderGrid();
+    toast(on ? 'Removed from your visits' : 'Added to your visits. ' + new Set(T.filter(t => v.includes(t.key)).map(t => t.n)).size + ' of 108');
+  };
+
+  $('readMore').onclick = () => { const d = $('tDesc'); d.classList.toggle('open'); $('readMore').textContent = d.classList.contains('open') ? 'Show less' : 'Read more'; };
+
+  // listen: read the temple aloud
+  function stopSpeech() { if (window.speechSynthesis) speechSynthesis.cancel(); speaking = false; $('listenBtn').lastChild.textContent = ' Listen'; }
+  $('listenBtn').onclick = () => {
+    if (!window.speechSynthesis) { toast('Reading aloud is not available here'); return; }
+    if (speaking) { stopSpeech(); return; }
+    const u = new SpeechSynthesisUtterance($('tName').textContent + '. ' + current.deities + '. ' + current.place + '. ' + $('tDesc').textContent);
+    const voices = speechSynthesis.getVoices(); const v = voices.find(x => /en-IN/i.test(x.lang)) || voices.find(x => /^en/i.test(x.lang));
+    if (v) u.voice = v; u.rate = 0.92; u.onend = stopSpeech; u.onerror = stopSpeech;
+    speaking = true; $('listenBtn').lastChild.textContent = ' Stop'; speechSynthesis.speak(u);
+  };
+
+  function home(push) { stopSpeech(); $('viewTemple').hidden = true; $('viewHome').hidden = false; if (push !== false) { try { location.hash = 'home'; } catch (e) {} } }
+  $('back').onclick = () => home();
+  window.addEventListener('hashchange', route);
+  function route() { const m = /^#t(\d{3}[a-z]?)$/.exec(location.hash); if (m) open(m[1], false); else home(false); }
+
+  let toastTimer; function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2400); }
+
+  updateProgress(); renderGrid(); route();
+  if (CFG.sw && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
