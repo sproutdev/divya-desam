@@ -18,7 +18,7 @@ head = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
         '<meta name="theme-color" content="#b7322a">\n<link rel="manifest" href="manifest.json">\n'
         '<link rel="icon" href="icon.png">\n<link rel="apple-touch-icon" href="icon.png">\n')
-body = inject({'name': 'Sujatha', 'embed': True, 'thumbs': True, 'sw': True}, temples)
+body = inject({'name': 'Sujatha', 'nameTa': 'சுஜாதா', 'embed': True, 'thumbs': True, 'sw': True}, temples)
 # move <title>, metas, links and style into head: simplest is to put everything in body, browsers handle it.
 (ROOT / 'index.html').write_text(head + '</head>\n<body>\n' + body + '\n</body>\n</html>\n')
 
@@ -29,7 +29,7 @@ for t in temples:
     p = SMALL_IMG / os.path.basename(t['img'])
     t['img'] = 'data:image/jpeg;base64,' + base64.b64encode(p.read_bytes()).decode()
     data2.append(t)
-art = inject({'name': 'Sujatha', 'embed': False, 'thumbs': False, 'sw': False}, data2)
+art = inject({'name': 'Sujatha', 'nameTa': 'சுஜாதா', 'embed': False, 'thumbs': False, 'sw': False}, data2)
 (ROOT / 'dist').mkdir(exist_ok=True)
 (ROOT / 'dist' / 'artifact.html').write_text(art)
 

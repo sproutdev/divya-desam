@@ -50,10 +50,39 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
 
 /* day line and garland bar */
 .day { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 8px; }
-.day h2 { font-size: 24px; font-variant-numeric: tabular-nums; }
-.day span { color: var(--fg-2); font-size: 17px; }
-.garland { height: 14px; background: var(--bg-2); border-radius: 999px; overflow: hidden; margin-top: 8px; border: 1px solid var(--line); }
-.garland i { display: block; height: 100%; width: 0; background: repeating-linear-gradient(90deg, var(--gold) 0 10px, var(--accent) 10px 14px); border-radius: 999px; transition: width .5s; }
+.day h2 { font-size: 26px; font-variant-numeric: tabular-nums; }
+.day span { color: var(--fg-2); font-size: 17px; text-align: right; }
+
+/* full-screen moments: welcome on first open, arrival once a day */
+.overlay { position: fixed; inset: 0; z-index: 10; background: var(--bg); color: var(--fg); overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 14px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); padding-block: calc(24px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)); }
+.overlay[hidden] { display: none !important; }
+.overlay .gopuram { width: 120px; height: 120px; }
+.overlay h1 { font-size: 36px; }
+.overlay h1.ta { font-size: 38px; margin-top: 6px; }
+.overlay p[lang="ta"] { font-family: var(--display); font-weight: 500; margin-top: 10px; }
+.overlay .btn .sub { font-size: 17px; display: block; }
+.overlay .btn > span { display: grid; gap: 2px; line-height: 1.2; }
+.overlay p { margin: 0; font-size: 22px; max-width: 30ch; }
+.overlay .ta { font-family: var(--display); font-weight: 800; font-size: 32px; line-height: 1.25; }
+.overlay .en { font-size: 20px; color: var(--fg-2); }
+.overlay img { width: min(100%, 420px); aspect-ratio: 4/3; object-fit: cover; border-radius: 22px; box-shadow: var(--shadow); }
+.overlay .btn { max-width: 420px; margin-top: 10px; }
+
+/* garland: one flower per completed day */
+.garland { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 8px 2px; margin-top: 4px; min-height: 40px; }
+.garland::-webkit-scrollbar { display: none; }
+.garland svg { width: 24px; height: 24px; flex: 0 0 auto; }
+.garland .count { flex: 0 0 auto; font-family: var(--display); font-weight: 700; font-size: 18px; color: var(--fg-2); padding-left: 6px; white-space: nowrap; }
+
+/* tomorrow, locked */
+.tomorrow { margin-top: 22px; position: relative; border-radius: 20px; overflow: hidden; background: var(--card); border: 2px solid var(--line); display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 14px; min-height: 100px; }
+.tomorrow img { width: 120px; height: 100%; min-height: 100px; object-fit: cover; filter: blur(6px) saturate(.6); transform: scale(1.1); }
+.tomorrow .lock { position: absolute; left: 44px; top: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; background: var(--fg); display: grid; place-items: center; }
+.tomorrow .lock svg { width: 22px; height: 22px; color: var(--bg); }
+.tomorrow .text { padding: 12px 14px 12px 0; min-width: 0; }
+.tomorrow .text .ta { font-family: var(--display); font-weight: 700; font-size: 20px; line-height: 1.25; overflow-wrap: anywhere; }
+.tomorrow .text .en { color: var(--fg-2); font-size: 16px; }
+.bar button.dim { opacity: .45; }
 
 /* the temple */
 .temple { margin-top: 14px; }
@@ -145,7 +174,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
 
   <section class="view" id="viewTemple">
     <div class="day" id="dayLine"><h2 id="dayTitle"></h2><span id="dayDate"></span></div>
-    <div class="garland" id="garland" role="progressbar" aria-valuemin="0" aria-valuemax="108"><i id="garlandFill"></i></div>
+    <div class="garland" id="garland" aria-label="Your garland, one flower for each day"></div>
 
     <div class="temple">
       <div id="photoWrap"></div>
@@ -169,6 +198,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
       </div>
 
       <details class="more" id="moreWrap"><summary>More videos of this temple</summary><div class="vlist" id="vlist"></div></details>
+      <div class="tomorrow" id="tomorrow" hidden><img alt=""><span class="lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><div class="text"><div class="eyebrow">Tomorrow</div><div class="ta" lang="ta"></div><div class="en"></div></div></div>
       <div class="complete" id="complete" hidden>Yatra complete. All 108 Divya Desams visited.</div>
       <div class="alllink"><button class="toplink" id="allLink">See all 108 temples <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div>
     </div>
@@ -187,6 +217,25 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
   <button class="sound" id="soundBtn" aria-pressed="false" aria-label="Read aloud"><svg id="soundOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg></button>
   <button id="nextBtn"><span id="nextLabel">Tomorrow</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
 </nav>
+<div class="overlay" id="welcome" hidden>
+  <svg class="gopuram" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 L12 22 H16 L12 44 H36 L32 22 H36 Z" fill="var(--gold)"/><path d="M20 44 V32 a4 4 0 0 1 8 0 V44 Z" fill="var(--accent)"/><rect x="18" y="24" width="12" height="3" fill="var(--accent)"/></svg>
+  <h1 class="ta" id="welcomeTa" lang="ta">வணக்கம், சுஜாதா</h1>
+  <h1 id="welcomeTitle">Vanakkam, Sujatha</h1>
+  <p lang="ta">108 திவ்ய தேசங்களின் யாத்திரை. ஒரு நாளைக்கு ஒரு கோயில்.</p>
+  <p>A yatra of the 108 Divya Desams, one temple every day.</p>
+  <p lang="ta">ஒவ்வொரு காலையும் இதைத் திறக்கவும், புதிய கோயில் காத்திருக்கும். இன்று முதல் நாள். யாத்திரை திருவரங்கத்தில் தொடங்குகிறது.</p>
+  <p>Open this app each morning and a new temple is waiting. Today is day 1. The yatra begins at Srirangam.</p>
+  <button class="btn gold" id="beginBtn"><span><span lang="ta">யாத்திரையைத் தொடங்கு</span> <span class="sub">Begin the yatra</span></span></button>
+</div>
+<div class="overlay" id="arrival" hidden>
+  <div class="eyebrow" id="arrivalDay"></div>
+  <h1 class="ta" lang="ta">இன்றைய கோயில்</h1>
+  <div class="en">Today you visit</div>
+  <img id="arrivalImg" alt="">
+  <div class="ta" id="arrivalTa" lang="ta"></div>
+  <div class="en" id="arrivalEn"></div>
+  <button class="btn gold" id="visitBtn"><span><span lang="ta">பார்க்க</span> <span class="sub">Visit</span></span></button>
+</div>
 <div class="toast" id="toast" role="status"></div>
 
 <script>
@@ -210,13 +259,18 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
   };
 
   // The yatra: one shrine per day she opens the app. A missed day waits; it never skips.
-  const todayISO = new Date().toISOString().slice(0, 10);
-  let day = S.get('day', 0);                 // 1-based index into T of today's shrine
-  const last = S.get('last', null);
-  if (last !== todayISO) { day = Math.min(day + 1, T.length); S.set('day', day); S.set('last', todayISO); }
-  if (!day) { day = 1; S.set('day', 1); }
+  const now = new Date();
+  const todayISO = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  const dateLong = now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+  let day = S.get('day', 0);                 // 1-based index into T of today's shrine; 0 until she taps Begin
+  let newDay = false;
+  if (day) {
+    const last = S.get('last', null);
+    if (last !== todayISO) { day = Math.min(day + 1, T.length); S.set('day', day); S.set('last', todayISO); }
+    newDay = S.get('arrived', null) !== todayISO && day > 1;
+  }
 
-  let idx = day - 1;        // shrine being shown (0-based)
+  let idx = Math.max(0, day - 1);        // shrine being shown (0-based)
   let browse = false;       // true when she came from the All temples grid
   let region = 'All';
   let sound = S.get('sound', false);
@@ -238,6 +292,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
     const sibs = T.filter(x => x.n === t.n);
     const shrine = sibs.length > 1 ? ' · shrine ' + (sibs.indexOf(t) + 1) + ' of ' + sibs.length : '';
     const doneNums = new Set(T.slice(0, day).map(x => x.n)).size;
+    $('prevBtn').onclick = () => showTemple(idx - 1, browse); $('nextBtn').onclick = () => showTemple(idx + 1, browse);
     if (browse) {
       $('dayTitle').textContent = 'Divya Desam ' + t.n + ' of 108' + shrine; $('dayDate').textContent = t.region;
       $('topLink').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg> All temples';
@@ -246,16 +301,20 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
       $('prevBtn').disabled = idx === 0; $('nextBtn').disabled = idx === T.length - 1;
     } else {
       const isToday = idx === day - 1;
-      $('dayTitle').textContent = (isToday ? 'Day ' + day : 'Day ' + (idx + 1)) + ' · Divya Desam ' + t.n + ' of 108' + shrine;
-      $('dayDate').textContent = isToday ? greeting : '';
+      $('dayTitle').textContent = isToday ? "Today's temple" : 'Day ' + (idx + 1) + ' of your yatra';
+      $('dayDate').textContent = isToday ? dateLong : 'Divya Desam ' + t.n + ' of 108' + shrine;
       $('topLink').textContent = isToday ? '' : 'Back to today';
       $('topLink').onclick = () => showTemple(day - 1);
       $('prevLabel').textContent = 'Yesterday'; $('nextLabel').textContent = isToday ? 'Tomorrow' : 'Next day';
-      $('prevBtn').disabled = idx === 0; $('nextBtn').disabled = idx >= day - 1;
+      $('prevBtn').disabled = idx === 0; $('nextBtn').disabled = false;
+      $('nextBtn').classList.toggle('dim', isToday);
+      if (isToday) $('nextBtn').onclick = () => toast(day < T.length ? 'Come back tomorrow to visit ' + T[day].name : 'Your yatra is complete');
     }
-    $('prevBtn').onclick = () => showTemple(idx - 1, browse); $('nextBtn').onclick = () => showTemple(idx + 1, browse);
-    $('garland').setAttribute('aria-valuenow', doneNums); $('garlandFill').style.width = (doneNums / 108 * 100) + '%';
+    renderGarland(doneNums);
     $('complete').hidden = !(day === T.length && idx === day - 1);
+    const tm = $('tomorrow'); const showTm = !browse && idx === day - 1 && day < T.length;
+    tm.hidden = !showTm;
+    if (showTm) { const n = T[day]; tm.querySelector('img').src = n.img; tm.querySelector('.ta').textContent = n.ta || n.name; tm.querySelector('.en').textContent = n.ta ? n.name : n.town; }
 
     $('tTa').textContent = t.ta || ''; $('tName').textContent = t.name;
     $('tSub').textContent = [t.alt, t.town !== t.name ? t.town : ''].filter(Boolean).join(' · ');
@@ -269,6 +328,12 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
     else $('storyBtn').hidden = true;
 
     if (sound && interacted) speak(t);
+  }
+
+  const flower = '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="var(--gold)"><circle cx="12" cy="4.5" r="3.4"/><circle cx="12" cy="19.5" r="3.4"/><circle cx="4.5" cy="12" r="3.4"/><circle cx="19.5" cy="12" r="3.4"/><circle cx="6.7" cy="6.7" r="3.2"/><circle cx="17.3" cy="6.7" r="3.2"/><circle cx="6.7" cy="17.3" r="3.2"/><circle cx="17.3" cy="17.3" r="3.2"/></g><circle cx="12" cy="12" r="3.6" fill="var(--accent)"/></svg>';
+  function renderGarland(n) {
+    const g = $('garland'); g.innerHTML = flower.repeat(day) + '<span class="count">Day ' + day + ' · ' + n + ' of 108</span>';
+    requestAnimationFrame(() => { g.scrollLeft = g.scrollWidth; });
   }
 
   function renderPhoto(t) {
@@ -379,7 +444,24 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
     showTemple(day - 1);
   }
   window.addEventListener('hashchange', route);
-  renderSound(); route();
+  // first open: welcome; later days: arrival card once a day
+  $('welcomeTitle').textContent = 'Vanakkam, ' + NAME; if (CFG.nameTa) $('welcomeTa').textContent = 'வணக்கம், ' + CFG.nameTa;
+  $('beginBtn').onclick = () => {
+    interacted = true; day = 1; S.set('day', 1); S.set('last', todayISO); S.set('arrived', todayISO);
+    $('welcome').hidden = true; showTemple(0);
+  };
+  $('visitBtn').onclick = () => { interacted = true; S.set('arrived', todayISO); $('arrival').hidden = true; showTemple(day - 1); };
+  renderSound();
+  if (!day) { $('welcome').hidden = false; }
+  else {
+    route();
+    if (newDay) {
+      const t = T[day - 1];
+      $('arrivalDay').textContent = 'Day ' + day + ' · ' + dateLong; $('arrivalImg').src = t.img; $('arrivalImg').alt = t.name;
+      $('arrivalTa').textContent = t.ta || t.name; $('arrivalEn').textContent = t.ta ? t.name + ' · ' + t.town : t.town;
+      $('arrival').hidden = false;
+    }
+  }
   if (CFG.sw && 'serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
 </script>
