@@ -74,6 +74,8 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
 .photo .play svg { width: 48px; height: 48px; margin-left: 6px; }
 .photo .label { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 16px 14px; background: linear-gradient(to top, rgba(10,12,30,.9), transparent); font-family: var(--display); font-weight: 700; font-size: 20px; }
 .photo iframe { display: block; width: 100%; aspect-ratio: 16/9; border: 0; }
+.photo.small { margin-top: 10px; cursor: default; }
+.photo.small img { aspect-ratio: 16/9; }
 .vmeta { margin: 8px 2px 0; font-size: 16px; color: var(--fg-2); }
 
 .names { padding-block: 14px 4px; }
@@ -164,6 +166,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.15; m
         <h1 id="tName"></h1>
         <div class="alt" id="tSub"></div>
       </div>
+      <div class="photo small" id="photoSmall"><img id="tImg" alt=""></div>
       <div class="facts">
         <div class="fact"><div class="eyebrow">Perumal and Thayar</div><div id="tDeities"></div></div>
         <div class="fact"><div class="eyebrow">Where</div><div id="tPlace"></div></div>
@@ -283,14 +286,18 @@ window.TEMPLES=[{"key":"001","n":1,"name":"Ranganathaswamy Temple, Srirangam","a
   function renderPhoto(t) {
     const w = $('photoWrap'); w.innerHTML = '';
     const v = t.videos[0];
-    const el = document.createElement(v && !CFG.embed ? 'a' : 'button'); el.className = 'photo';
-    if (el.tagName === 'A') { el.href = 'https://www.youtube.com/watch?v=' + v.id; el.target = '_blank'; el.rel = 'noopener'; } else el.type = 'button';
-    el.innerHTML = '<img alt="">' + (v ? '<span class="play" aria-hidden="true">' + playIcon + '</span><span class="label">Tap to watch</span>' : '');
-    el.querySelector('img').src = t.img; el.querySelector('img').alt = t.name;
-    el.setAttribute('aria-label', v ? 'Watch a video of ' + t.name : t.name);
-    if (v && CFG.embed) el.onclick = () => play(v);
-    w.appendChild(el);
-    $('vmeta').textContent = v ? 'Video by ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '') : '';
+    $('tImg').src = t.img; $('tImg').alt = t.name;
+    if (v && CFG.embed && navigator.onLine !== false) {
+      embed(v, false); $('photoSmall').hidden = false;
+    } else {
+      // no video, offline, or a frame that cannot embed: the photo is the poster
+      const el = document.createElement(v && !CFG.embed ? 'a' : 'div'); el.className = 'photo';
+      if (el.tagName === 'A') { el.href = 'https://www.youtube.com/watch?v=' + v.id; el.target = '_blank'; el.rel = 'noopener'; el.setAttribute('aria-label', 'Watch a video of ' + t.name); }
+      el.innerHTML = '<img alt="">' + (v && !CFG.embed ? '<span class="play" aria-hidden="true">' + playIcon + '</span><span class="label">Tap to watch on YouTube</span>' : '');
+      el.querySelector('img').src = t.img; el.querySelector('img').alt = t.name;
+      w.appendChild(el); $('photoSmall').hidden = true;
+      $('vmeta').textContent = v ? '' : '';
+    }
     const vl = $('vlist'); vl.innerHTML = '';
     const rest = (t.videos || []).slice(1); $('moreWrap').hidden = !rest.length; $('moreWrap').open = false;
     rest.forEach(x => {
@@ -301,16 +308,19 @@ window.TEMPLES=[{"key":"001","n":1,"name":"Ranganathaswamy Temple, Srirangam","a
     });
   }
 
-  function play(v) {
-    stopSpeech();
-    if (!CFG.embed) { const a = document.createElement('a'); a.href = 'https://www.youtube.com/watch?v=' + v.id; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); return; }
+  function embed(v, autoplay) {
     const w = $('photoWrap'); w.innerHTML = '';
     const box = document.createElement('div'); box.className = 'photo';
     const f = document.createElement('iframe'); f.allow = 'autoplay; fullscreen; picture-in-picture'; f.allowFullscreen = true;
-    f.src = 'https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&rel=0&playsinline=1'; f.title = v.title;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + v.id + '?rel=0&playsinline=1&modestbranding=1' + (autoplay ? '&autoplay=1' : ''); f.title = v.title;
     box.appendChild(f); w.appendChild(box);
-    $('vmeta').textContent = 'Now playing · ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '');
-    w.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('vmeta').textContent = 'Video by ' + v.channel + (v.mins ? ' · ' + v.mins + ' min' : '');
+  }
+
+  function play(v) {
+    stopSpeech();
+    if (!CFG.embed) { const a = document.createElement('a'); a.href = 'https://www.youtube.com/watch?v=' + v.id; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); return; }
+    embed(v, true); $('photoWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // read aloud
